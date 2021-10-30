@@ -1,12 +1,12 @@
 # NewWxPay
 原作者不修复BUG，自己搞了个，技术有限，基本都是照搬
-原地址https://github.com/jasl/wx_pay.git
+
+原地址[WxPay](https://github.com/jasl/wx_pay.git)
+
 A simple Wechat pay ruby gem, without unnecessary magic or wrapper.
 copied from [alipay](https://github.com/chloerei/alipay) .
 
 Please read official document first: https://pay.weixin.qq.com/wiki/doc/api/index.html.
-
-[![Build Status](https://github.com/chinachaijin/new_wx_pay)](https://github.com/chinachaijin/new_wx_pay)
 
 ## Installation
 
