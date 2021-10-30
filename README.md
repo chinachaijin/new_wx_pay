@@ -12,13 +12,13 @@ Please read official document first: https://pay.weixin.qq.com/wiki/doc/api/inde
 Add this line to your Gemfile:
 
 ```ruby
-gem 'wx_pay'
+gem 'new_wx_pay'
 ```
 
 or development version
 
 ```ruby
-gem 'wx_pay', :github => 'jasl/wx_pay'
+gem 'new_wx_pay', :github => 'chinachaijin/new_wx_pay'
 ```
 
 And then execute:
@@ -31,36 +31,36 @@ $ bundle
 
 ### Config
 
-Create `config/initializers/wx_pay.rb` and put following configurations into it.
+Create `config/initializers/new_wx_pay.rb` and put following configurations into it.
 
 ```ruby
 # required
-WxPay.appid = 'YOUR_APPID'
-WxPay.key = 'YOUR_KEY'
-WxPay.mch_id = 'YOUR_MCH_ID' # required type is String, otherwise there will be cases where JS_PAY can pay but the APP cannot pay
-WxPay.debug_mode = true # default is `true`
-WxPay.sandbox_mode = false # default is `false`
+NewWxPay.appid = 'YOUR_APPID'
+NewWxPay.key = 'YOUR_KEY'
+NewWxPay.mch_id = 'YOUR_MCH_ID' # required type is String, otherwise there will be cases where JS_PAY can pay but the APP cannot pay
+NewWxPay.debug_mode = true # default is `true`
+NewWxPay.sandbox_mode = false # default is `false`
 
 # cert, see https://pay.weixin.qq.com/wiki/doc/api/app/app.php?chapter=4_3
 # using PCKS12
-WxPay.set_apiclient_by_pkcs12(File.read(pkcs12_filepath), pass)
+NewWxPay.set_apiclient_by_pkcs12(File.read(pkcs12_filepath), pass)
 
 # if you want to use `generate_authorize_req` and `authenticate`
-WxPay.appsecret = 'YOUR_SECRET' 
+NewWxPay.appsecret = 'YOUR_SECRET' 
 
 # optional - configurations for RestClient timeout, etc.
-WxPay.extra_rest_client_options = {timeout: 2, open_timeout: 3}
+NewWxPay.extra_rest_client_options = {timeout: 2, open_timeout: 3}
 ```
 
 If you need to use sandbox mode.
 
 ```ruby
-WxPay.appid = 'YOUR_APPID'
-WxPay.mch_id = 'YOUR_MCH_ID' # required type is String, otherwise there will be cases where JS_PAY can pay but the APP cannot pay
-WxPay.debug_mode = true # default is `true`
-WxPay.sandbox_mode = true # default is `false`
-result = WxPay::Service.get_sandbox_signkey
-WxPay.key = result['sandbox_signkey']
+NewWxPay.appid = 'YOUR_APPID'
+NewWxPay.mch_id = 'YOUR_MCH_ID' # required type is String, otherwise there will be cases where JS_PAY can pay but the APP cannot pay
+NewWxPay.debug_mode = true # default is `true`
+NewWxPay.sandbox_mode = true # default is `false`
+result = NewWxPay::Service.get_sandbox_signkey
+NewWxPay.key = result['sandbox_signkey']
 
 ```
 
@@ -92,7 +92,7 @@ params = {
 If your trade type is "MWEB", the result would be like this.
 
 ```ruby
-r = WxPay::Service.invoke_unifiedorder params
+r = NewWxPay::Service.invoke_unifiedorder params
 # => {
 #      "return_code"=>"SUCCESS",
 #      "return_msg"=>"OK",
@@ -110,7 +110,7 @@ r = WxPay::Service.invoke_unifiedorder params
 If your trade type is "JSAPI", the result would be like this.
 
 ```ruby
-r = WxPay::Service.invoke_unifiedorder params
+r = NewWxPay::Service.invoke_unifiedorder params
 # => {
 #      "return_code"=>"SUCCESS",
 #      "return_msg"=>"OK",
@@ -131,7 +131,7 @@ but `wx_pay` provides `generate_authorize_url` and `authenticate` to help you ge
 If your trade type is "NATIVE", the result would be like this.
 
 ```ruby
-r = WxPay::Service.invoke_unifiedorder params
+r = NewWxPay::Service.invoke_unifiedorder params
 # => {
 #      "return_code"=>"SUCCESS",
 #      "return_msg"=>"OK",
@@ -162,12 +162,12 @@ params = {
 }
 
 # call generate_app_pay_req
-r = WxPay::Service.generate_app_pay_req params
+r = NewWxPay::Service.generate_app_pay_req params
 # => {
 #      appid: 'wxd930ea5d5a258f4f',
 #      partnerid: '1900000109',
 #      prepayid: '1101000000140415649af9fc314aa427',
-#      package: 'Sign=WXPay',
+#      package: 'Sign=NewWxPay',
 #      noncestr: '1101000000140429eb40476f8896f4c9',
 #      timestamp: '1398746574',
 #      sign: '7FFECB600D7157C5AA49810D2D8F28BC2811827B'
@@ -184,7 +184,7 @@ params = {
 }
 
 # call generate_js_pay_req
-r = WxPay::Service.generate_js_pay_req params
+r = NewWxPay::Service.generate_js_pay_req params
 # {
 #   "appId": "wx020c5c792c8537de",
 #   "package": "prepay_id=wx20160902211806a11ccee7a20956539837",
@@ -208,7 +208,7 @@ post "notify" => "orders#notify"
 def notify
   result = Hash.from_xml(request.body.read)["xml"]
 
-  if WxPay::Sign.verify?(result)
+  if NewWxPay::Sign.verify?(result)
 
     # find your order and process the post-paid logic.
 
@@ -237,7 +237,7 @@ module WechatPay
     
     post "notify" do
       result = params["xml"]
-      if WxPay::Sign.verify?(result)
+      if NewWxPay::Sign.verify?(result)
           # find your order and process the post-paid logic.
           
         status 200
@@ -259,7 +259,7 @@ Wechat payment integrating with QRCode is a recommended process flow which will 
 **Example Code** (please make sure that `public/uploads/qrcode` was created):
 
 ```ruby
-r = WxPay::Service.invoke_unifiedorder params
+r = NewWxPay::Service.invoke_unifiedorder params
 qrcode_png = RQRCode::QRCode.new( r["code_url"], :size => 5, :level => :h ).to_img.resize(200, 200).save("public/uploads/qrcode/#{@order.id.to_s}_#{Time.now.to_i.to_s}.png")
 @qrcode_url = "/uploads/qrcode/#{@order.id.to_s}_#{Time.now.to_i.to_s}.png"
 ```
@@ -276,7 +276,7 @@ you can pass `appid`, `mch_id`, `key`, `apiclient_cert`, `apiclient_key` as a ha
 For example
 ```ruby
 another_account = {appid: 'APPID', mch_id: 'MCH_ID', key: 'KEY'}.freeze
-WxPay::Service.generate_app_pay_req params, another_account.dup
+NewWxPay::Service.generate_app_pay_req params, another_account.dup
 ```
 
 ## Contributing
