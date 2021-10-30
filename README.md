@@ -1,5 +1,5 @@
 # WxPay
-
+原作者不修复BUG，自己搞了个，技术有限，基本都是照搬
 A simple Wechat pay ruby gem, without unnecessary magic or wrapper.
 copied from [alipay](https://github.com/chloerei/alipay) .
 
