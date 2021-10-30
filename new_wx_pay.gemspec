@@ -4,7 +4,7 @@ require "new_wx_pay/version"
 
 Gem::Specification.new do |s|
   s.name          = "new_wx_pay"
-  s.version       = WxPay::VERSION
+  s.version       = NewWxPay::VERSION
   s.authors       = ["chinachai"]
   s.email         = ["502807810@qq.com"]
   s.homepage      = "https://github.com/jasl/wx_pay"
